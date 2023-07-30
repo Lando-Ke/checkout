@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\ProductAddedToCart;
+use App\Events\ProductRemovedFromCart;
+use App\Listeners\ProcessProductAddedToCart;
+use App\Listeners\ProcessProductRemovedFromCart;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -14,16 +18,24 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array<class-string, array<int, class-string>>
      */
-    protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
-        ],
-    ];
+    protected $listen
+        = [
+            Registered::class             => [
+                SendEmailVerificationNotification::class,
+            ],
+            ProductAddedToCart::class     => [
+                ProcessProductAddedToCart::class,
+            ],
+            ProductRemovedFromCart::class => [
+                ProcessProductRemovedFromCart::class,
+            ],
+        ];
 
     /**
      * Register any events for your application.
      */
-    public function boot(): void
+    public function boot()
+    : void
     {
         //
     }
@@ -31,7 +43,8 @@ class EventServiceProvider extends ServiceProvider
     /**
      * Determine if events and listeners should be automatically discovered.
      */
-    public function shouldDiscoverEvents(): bool
+    public function shouldDiscoverEvents()
+    : bool
     {
         return false;
     }
